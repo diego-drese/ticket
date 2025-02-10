@@ -1,0 +1,199 @@
+version: "3.5"
+
+x-environment:
+  &default-back-environment
+  # These environment variables will be used by taiga-back and taiga-async.
+  # Database settings
+  POSTGRES_DB: "taiga"
+  POSTGRES_USER: "taiga"
+  POSTGRES_PASSWORD: "Fttsr4567FFssal"
+  POSTGRES_HOST: "taiga-db"
+  # Taiga settings
+  TAIGA_SECRET_KEY: "FBhBIPcpAq7iqa2UZwGP6c"
+  TAIGA_SITES_SCHEME: "https"
+  TAIGA_SITES_DOMAIN: "taiga.map.tec.br"
+  TAIGA_SUBPATH: ""
+  # Email settings.
+  EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
+  DEFAULT_FROM_EMAIL: "taiga@map.tec.br"
+  EMAIL_USE_TLS: "true"
+  EMAIL_USE_SSL: "false"
+  EMAIL_HOST: "sandbox.smtp.mailtrap.io"
+  EMAIL_PORT: "2525"
+  EMAIL_HOST_USER: "cac88c3d066236"
+  EMAIL_HOST_PASSWORD: "0efbd6d5bc128e"
+  # Rabbitmq settings
+  RABBITMQ_USER: "taiga"
+  RABBITMQ_PASS: "Zpwsqo89123HHsa"
+  # Telemetry settings
+  ENABLE_TELEMETRY: "true"
+  # ...your customizations go here
+
+x-volumes:
+  &default-back-volumes
+  # These volumens will be used by taiga-back and taiga-async.
+  - taiga-static-data:/taiga-back/static
+  - taiga-media-data:/taiga-back/media
+  # - ./config.py:/taiga-back/settings/config.py
+
+services:
+  taiga-db:
+    image: postgres:12.3
+    environment:
+      POSTGRES_DB: "taiga"
+      POSTGRES_USER: "taiga"
+      POSTGRES_PASSWORD: "Fttsr4567FFssal"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taiga"]
+      interval: 2s
+      timeout: 15s
+      retries: 5
+      start_period: 3s
+    volumes:
+      - taiga-db-data:/var/lib/postgresql/data
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+
+  taiga-back:
+    image: taigaio/taiga-back:latest
+    environment: *default-back-environment
+    volumes: *default-back-volumes
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+    depends_on:
+      - taiga-db
+      - taiga-events-rabbitmq
+      - taiga-async-rabbitmq
+
+
+  taiga-async:
+    image: taigaio/taiga-back:latest
+    entrypoint: ["/taiga-back/docker/async_entrypoint.sh"]
+    environment: *default-back-environment
+    volumes: *default-back-volumes
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+    depends_on:
+      - taiga-db
+      - taiga-events-rabbitmq
+      - taiga-async-rabbitmq
+
+  taiga-async-rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret-erlang-cookie"
+      RABBITMQ_DEFAULT_USER: "taiga"
+      RABBITMQ_DEFAULT_PASS: "Zpwsqo89123HHsa"
+      RABBITMQ_DEFAULT_VHOST: "taiga"
+    hostname: "taiga-async-rabbitmq"
+    volumes:
+      - taiga-async-rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+
+  taiga-front:
+    image: taigaio/taiga-front:latest
+    environment:
+      TAIGA_URL: "https://taiga.map.tec.br"
+      TAIGA_WEBSOCKETS_URL: "wss://taiga.map.tec.br"
+      TAIGA_SUBPATH: ""
+      # ...your customizations go here
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+    # volumes:
+    #   - ./conf.json:/usr/share/nginx/html/conf.json
+
+  taiga-events:
+    image: taigaio/taiga-events:latest
+    environment:
+      RABBITMQ_USER: "taiga"
+      RABBITMQ_PASS: "Zpwsqo89123HHsa"
+      TAIGA_SECRET_KEY: "FBhBIPcpAq7iqa2UZwGP6c"
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+    depends_on:
+      - taiga-events-rabbitmq
+
+  taiga-events-rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret-erlang-cookie"
+      RABBITMQ_DEFAULT_USER: "taiga"
+      RABBITMQ_DEFAULT_PASS: "Zpwsqo89123HHsa"
+      RABBITMQ_DEFAULT_VHOST: "taiga"
+    hostname: "taiga-events-rabbitmq"
+    volumes:
+      - taiga-events-rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+
+  taiga-protected:
+    image: taigaio/taiga-protected:latest
+    environment:
+      MAX_AGE: "360"
+      SECRET_KEY: "FBhBIPcpAq7iqa2UZwGP6c"
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == Worker-1
+
+
+volumes:
+  taiga-static-data:
+    driver: local
+    name: taiga-static-data
+  taiga-media-data:
+    driver: local
+    name: taiga-media-data
+  taiga-db-data:
+    driver: local
+    name: taiga-db-data
+  taiga-async-rabbitmq-data:
+    driver: local
+    name: taiga-async-rabbitmq-data
+  taiga-events-rabbitmq-data:
+    driver: local
+    name: taiga-events-rabbitmq-data
+
+networks:
+  public:
+    external: true
+    name: public
