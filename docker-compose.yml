@@ -7,8 +7,8 @@ services:
     volumes:
       - ticket_db:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=helper
-      - MYSQL_USER=helper
+      - MYSQL_DATABASE=ticket
+      - MYSQL_USER=ticket
       - MYSQL_PASSWORD=HkKXsnZhuBlmTTs
       - MYSQL_ROOT_PASSWORD=HkKXsnZhuBlmZuTXByZ
     command: --default-storage-engine innodb
@@ -27,13 +27,15 @@ services:
       retries: 3
 
   ticket:
-    image: eloufirhatim/helper:latest
+    image: diegoneumann/ticket:latest
     environment:
+      - APP_NAME=GPX
+      - APP_URL=https://ticket.map.tec
       - DB_CONNECTION=mysql
       - DB_HOST=ticket_db
       - DB_PORT=3306
-      - DB_DATABASE=helper
-      - DB_USERNAME=helper
+      - DB_DATABASE=ticket
+      - DB_USERNAME=ticket
       - DB_PASSWORD=HkKXsnZhuBlmTTs
       - MAIL_MAILER=smtp
       - MAIL_HOST=smtp.mailtrap.io
@@ -41,6 +43,7 @@ services:
       - MAIL_USERNAME=cac88c3d066236
       - MAIL_PASSWORD=0efbd6d5bc128e
       - MAIL_ENCRYPTION=tls
+      - MAIL_ENCRYPTION=noreply@map.tec.br
     depends_on:
       - ticket_db
     networks:
