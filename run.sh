@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat <<EOF > /var/www/html/.env
+cat <<EOF > /app/.env
 APP_NAME=$APP_NAME
 APP_ENV=production
 APP_KEY=base64:edCbcviax/5UUwcfbX18+FBhBIPcpAq7iqa2UZwGP6c=

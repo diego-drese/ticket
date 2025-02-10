@@ -3,7 +3,7 @@ version: "3.8"
 services:
   ticket_db:
     image: mysql:5.7
-    container_name: helper-mysql
+    container_name: ticket_db
     volumes:
       - ticket_db:/var/lib/mysql
     environment:
