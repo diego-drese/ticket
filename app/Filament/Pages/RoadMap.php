@@ -11,6 +11,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Config;
 
 class RoadMap extends Page implements HasForms
 {
@@ -88,11 +89,16 @@ class RoadMap extends Page implements HasForms
 
     public function filter(): void
     {
+        $url = route('road-map.data', $this->project);
+        if(Config::get('app.env') === 'production') {
+            $url = str_replace('http://', 'https://', $url);
+        }
+
         $data = $this->form->getState();
         $project = $data['selectedProject'];
         $this->project = Project::where('id', $project)->first();
         $this->dispatchBrowserEvent('projectChanged', [
-            'url' => route('road-map.data', $this->project),
+            'url' => $url,
             'start_date' => Carbon::parse($this->project->epicsFirstDate)->subYear()->format('Y-m-d'),
             'end_date' => Carbon::parse($this->project->epicsLastDate)->addYear()->format('Y-m-d'),
             'scroll_to' => Carbon::parse($this->project->epicsFirstDate)->subDays(5)->format('Y-m-d')
