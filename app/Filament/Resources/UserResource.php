@@ -11,6 +11,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
 
 class UserResource extends Resource
@@ -66,6 +67,23 @@ class UserResource extends Resource
                                     ->required()
                                     ->columns(3)
                                     ->relationship('roles', 'name'),
+
+                                Forms\Components\TextInput::make('password')
+                                    ->label(__('Password'))
+                                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                    ->dehydrated(fn ($state) => filled($state))
+                                    ->required(fn (string $context): bool => $context === 'create')
+                                    ->minLength(8)
+                                    ->maxLength(255)
+                                    ->columns(2)
+                                    ->password(),
+                                Forms\Components\TextInput::make('password_confirmation')
+                                    ->label(__('Confirm Password'))
+                                    ->required()
+                                    ->same('password')
+                                    ->maxLength(255)
+                                    ->password(),
+
                             ]),
                     ])
             ]);
