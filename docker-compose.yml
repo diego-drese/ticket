@@ -32,6 +32,7 @@ services:
       - APP_NAME=GPX
       - APP_URL=https://ticket.map.tec
       - DB_CONNECTION=mysql
+      - APP_FORCE_HTTPS=1
       - DB_HOST=ticket_db
       - DB_PORT=3306
       - DB_DATABASE=ticket
