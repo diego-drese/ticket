@@ -18,9 +18,13 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        //
+    public function register() {
+        \Illuminate\Http\Request::macro('hasValidSignature', function ($absolute = true) {
+            if('livewire/upload-file' == request()->path()) {
+                return true;
+            }
+            return \Illuminate\Support\Facades\URL::hasValidSignature($this, $absolute);
+        });
     }
 
     /**
