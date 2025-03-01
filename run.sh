@@ -68,11 +68,11 @@ VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 EOF
 
 
-php artisan queue:work &
 php artisan migrate
 php artisan db:seed
 npm run build
 php artisan storage:link
 php artisan optimize:clear
 php artisan optimize
+php artisan queue:work &
 php artisan serve --host 0.0.0.0
