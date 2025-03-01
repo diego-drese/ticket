@@ -1,64 +1,71 @@
 version: "3.8"
 
 services:
-  ticket_db:
-    image: mysql:5.7
-    container_name: ticket_db
-    volumes:
-      - ticket_db:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=ticket
-      - MYSQL_USER=ticket
-      - MYSQL_PASSWORD=HkKXsnZhuBlmTTs
-      - MYSQL_ROOT_PASSWORD=HkKXsnZhuBlmZuTXByZ
-    command: --default-storage-engine innodb
-    networks:
-        - public
-    deploy:
-        replicas: 1
-        placement:
-            constraints:
-                - node.hostname == Worker-1
-    healthcheck:
-      test: mysqladmin -p$$MYSQL_ROOT_PASSWORD ping -h localhost
-      interval: 20s
-      start_period: 10s
-      timeout: 10s
-      retries: 3
+    ticket_db:
+        image: mysql:5.7
+        container_name: ticket_db
+        ports:
+            - 3387:3306
+        volumes:
+            - ticket_db:/var/lib/mysql
+        environment:
+            - MYSQL_DATABASE=ticket
+            - MYSQL_USER=ticket
+            - MYSQL_PASSWORD=HkKXsnZhuBlmTTs
+            - MYSQL_ROOT_PASSWORD=HkKXsnZhuBlmZuTXByZ
+        command: --default-storage-engine innodb
+        networks:
+            - public
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == Worker-1
+        healthcheck:
+            test: mysqladmin -p$$MYSQL_ROOT_PASSWORD ping -h localhost
+            interval: 20s
+            start_period: 10s
+            timeout: 10s
+            retries: 3
 
-  ticket:
-    image: diegoneumann/ticket:latest
-    environment:
-      - APP_NAME=GPX
-      - APP_URL=https://ticket.map.tec
-      - DB_CONNECTION=mysql
-      - APP_FORCE_HTTPS=1
-      - DB_HOST=ticket_db
-      - DB_PORT=3306
-      - DB_DATABASE=ticket
-      - DB_USERNAME=ticket
-      - DB_PASSWORD=HkKXsnZhuBlmTTs
-      - MAIL_MAILER=smtp
-      - MAIL_HOST=smtp.mailtrap.io
-      - MAIL_PORT=2525
-      - MAIL_USERNAME=cac88c3d066236
-      - MAIL_PASSWORD=0efbd6d5bc128e
-      - MAIL_ENCRYPTION=tls
-      - MAIL_ENCRYPTION=noreply@map.tec.br
-    depends_on:
-      - ticket_db
-    networks:
-        - public
-    deploy:
-        replicas: 1
-        placement:
-            constraints:
-                - node.hostname == Worker-1
-    restart: "no"
-    #ports:
-      #- 8000:8000
-    volumes:
-      - /etc/localtime:/etc/localtime
+    ticket:
+        image: diegoneumann/ticket:latest
+        environment:
+            - APP_NAME=GPX
+            - APP_URL=https://ticket.map.tec.br
+            - SESSION_DOMAIN=ticket.map.tec.br
+            - APP_FORCE_HTTPS=1
+            - DB_CONNECTION=mysql
+            - DB_HOST=ticket_db
+            - DB_PORT=3306
+            - DB_DATABASE=ticket
+            - DB_USERNAME=ticket
+            - DB_PASSWORD=HkKXsnZhuBlmTTs
+            - MAIL_MAILER=ses
+            - MAIL_HOST=email-smtp.sa-east-1.amazonaws.com
+            - MAIL_PORT=465
+            - MAIL_USERNAME=
+            - MAIL_PASSWORD=
+            - MAIL_ENCRYPTION=tls
+            - MAIL_FROM_ADDRESS=noreply@gpx.app.br
+            - AWS_ACCESS_KEY_ID=
+            - AWS_SECRET_ACCESS_KEY=
+            - AWS_DEFAULT_REGION=sa-east-1
+        depends_on:
+            - ticket_db
+        networks:
+            - public
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == Worker-1
+        restart: "no"
+          #ports:
+        #- 8000:8000
+        volumes:
+            - /etc/localtime:/etc/localtime
+            - ticket:/app/storage
 
 volumes:
     ticket:
@@ -67,6 +74,7 @@ volumes:
     ticket_db:
         driver: local
         name: ticket_db
+
 networks:
     public:
         external: true
