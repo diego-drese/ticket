@@ -7,6 +7,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -45,13 +46,16 @@ class Attachments extends Component implements HasForms, HasTable
         return [
             SpatieMediaLibraryFileUpload::make('attachments')
                 ->label(__('Attachments'))
+                ->collection($this->getDynamicCollectionName())
                 ->hint(__('Important: If a file has the same name, it will be replaced'))
                 ->helperText(__('Here you can attach all files needed for this ticket'))
                 ->multiple()
                 ->disablePreview()
         ];
     }
-
+    protected function getDynamicCollectionName(): string{
+        return 'attachments_' . now()->format('Ymd_His');
+    }
     public function perform(): void
     {
         $this->form->getState();
@@ -83,6 +87,11 @@ class Attachments extends Component implements HasForms, HasTable
                 ->sortable()
                 ->searchable(),
 
+            TextColumn::make('collection_name')
+                ->label(__('Collection'))
+                ->sortable()
+                ->searchable(),
+
             TextColumn::make('mime_type')
                 ->label(__('Mime type'))
                 ->sortable()
@@ -93,6 +102,12 @@ class Attachments extends Component implements HasForms, HasTable
     protected function getTableActions(): array
     {
         return [
+            Action::make('download')
+                ->label(__('Download'))
+                ->icon('heroicon-o-download')
+                ->url(fn($record) => $record->getUrl()) // URL direta do arquivo
+                ->openUrlInNewTab(),
+
             DeleteAction::make()
                 ->action(function ($record) {
                     $record->delete();
