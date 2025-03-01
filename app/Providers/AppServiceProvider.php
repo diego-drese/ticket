@@ -70,7 +70,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         // Force HTTPS over HTTP
-        if (Config::set('app.force_https') ?? false) {
+        if (Config::get('app.force_https')) {
             URL::forceScheme('https');
         }
     }
