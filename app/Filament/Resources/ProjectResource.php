@@ -65,7 +65,7 @@ class ProjectResource extends Resource
                                     ->schema([
                                         Forms\Components\Grid::make()
                                             ->columnSpan(2)
-                                            ->columns(12)
+                                            ->columns(14)
                                             ->schema([
                                                 Forms\Components\TextInput::make('name')
                                                     ->label(__('Project name'))
@@ -73,15 +73,19 @@ class ProjectResource extends Resource
                                                     ->columnSpan(10)
                                                     ->maxLength(255),
 
-                                                Forms\Components\TextInput::make('ticket_prefix')
-                                                    ->label(__('Ticket prefix'))
-                                                    ->maxLength(3)
-                                                    ->columnSpan(2)
-                                                    ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
-                                                    ->disabled(
-                                                        fn($record) => $record && $record->tickets()->count() != 0
-                                                    )
+                                                Forms\Components\Hidden::make('ticket_prefix')
+                                                    ->default(fn() => strtoupper(Str::random(3)))
                                                     ->required()
+
+//                                                Forms\Components\TextInput::make('ticket_prefix')
+//                                                    ->label(__('Ticket prefix'))
+//                                                    ->maxLength(3)
+//                                                    ->columnSpan(2)
+//                                                    ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
+//                                                    ->disabled(
+//                                                        fn($record) => $record && $record->tickets()->count() != 0
+//                                                    )
+//                                                    ->required()
                                             ]),
 
                                         Forms\Components\Select::make('owner_id')
@@ -111,7 +115,7 @@ class ProjectResource extends Resource
                                         'scrum' => __('Scrum')
                                     ])
                                     ->reactive()
-                                    ->default(fn() => 'kanban')
+                                    ->default(fn() => 'scrum')
                                     ->helperText(function ($state) {
                                         if ($state === 'kanban') {
                                             return __('Display and move your project forward with issues on a powerful board.');
