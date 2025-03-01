@@ -135,7 +135,7 @@
     "OIDC Connect": "Conexão OIDC",
     "OIDC Connect error": "Erro de conexão OIDC",
     "Old status:": "Estado antigo:",
-    "Old status: :oldStatus - New status: :newStatus": "Status antigo: :old Status - Novo status: :new Status",
+    "Old status: :oldStatus - New status: :newStatus": "Status antigo: :oldStatus Status - Novo status: :newStatus",
     "Only default statuses are listed when no projects selected": "Somente status padrão são listados quando nenhum projeto é selecionado",
     "Owner": "Proprietário",
     "Owner:": "Proprietário:",
