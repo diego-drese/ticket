@@ -33,9 +33,9 @@ SESSION_LIFETIME=120
 
 MEMCACHED_HOST=127.0.0.1
 
-REDIS_HOST=redis
-REDIS_PASSWORD=null
-REDIS_PORT=6379
+REDIS_HOST=$REDIS_HOST
+REDIS_PASSWORD=$REDIS_PASSWORD
+REDIS_PORT=$REDIS_PORT
 
 MAIL_MAILER=$MAIL_MAILER
 MAIL_HOST=$MAIL_HOST
@@ -74,4 +74,5 @@ php artisan db:seed
 npm run build
 php artisan storage:link
 php artisan optimize:clear
+php artisan optimize
 php artisan serve --host 0.0.0.0
