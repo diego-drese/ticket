@@ -9,7 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTicketType extends CreateRecord
 {
     protected static string $resource = TicketTypeResource::class;
-
+    protected function getTitle(): string{
+        return __('New ticket type');
+    }
     protected function afterCreate(): void
     {
         if ($this->record->is_default) {

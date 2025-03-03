@@ -9,7 +9,9 @@ use Filament\Resources\Pages\EditRecord;
 class EditActivity extends EditRecord
 {
     protected static string $resource = ActivityResource::class;
-
+    protected function getTitle(): string{
+        return __('Edit activity');
+    }
     protected function getActions(): array
     {
         return [

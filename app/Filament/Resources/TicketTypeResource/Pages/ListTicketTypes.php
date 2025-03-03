@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListTicketTypes extends ListRecords
 {
     protected static string $resource = TicketTypeResource::class;
-
+    protected function getTitle(): string{
+        return __('Ticket types');
+    }
     protected function getActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label(__('New ticket type')),
         ];
     }
 }

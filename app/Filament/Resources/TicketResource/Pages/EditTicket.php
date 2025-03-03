@@ -10,7 +10,7 @@ class EditTicket extends EditRecord
 {
     protected static string $resource = TicketResource::class;
     protected function getTitle(): string{
-        return __('Editar ticket');
+        return __('Edit ticket');
     }
 
     protected function getActions(): array

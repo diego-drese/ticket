@@ -8,4 +8,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateActivity extends CreateRecord
 {
     protected static string $resource = ActivityResource::class;
+    protected function getTitle(): string{
+        return __('New activity');
+    }
 }

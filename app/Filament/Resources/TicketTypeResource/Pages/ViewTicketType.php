@@ -10,6 +10,9 @@ class ViewTicketType extends ViewRecord
 {
     protected static string $resource = TicketTypeResource::class;
 
+    protected function getTitle(): string{
+        return __('View ticket type');
+    }
     protected function getActions(): array
     {
         return [

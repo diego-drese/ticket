@@ -43,7 +43,7 @@ class TicketStatusResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->label(__('Status name'))
+                                    ->label(__('Status ticket name'))
                                     ->required()
                                     ->maxLength(255),
 

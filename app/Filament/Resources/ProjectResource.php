@@ -231,8 +231,8 @@ class ProjectResource extends Resource
                         Filament::notify('success', __('Project updated'));
                     }),
 
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label(__('View')),
+                Tables\Actions\EditAction::make()->label(__('Edit')),
 
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('exportLogHours')

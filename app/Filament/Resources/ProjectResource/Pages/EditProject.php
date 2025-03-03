@@ -9,7 +9,9 @@ use Filament\Resources\Pages\EditRecord;
 class EditProject extends EditRecord
 {
     protected static string $resource = ProjectResource::class;
-
+    protected function getTitle(): string{
+        return __('Edit Project');
+    }
     protected function getActions(): array
     {
         return [

@@ -10,7 +10,9 @@ use Filament\Resources\Pages\EditRecord;
 class EditTicketPriority extends EditRecord
 {
     protected static string $resource = TicketPriorityResource::class;
-
+    protected function getTitle(): string{
+        return __('Edit ticket priority');
+    }
     protected function getActions(): array
     {
         return [

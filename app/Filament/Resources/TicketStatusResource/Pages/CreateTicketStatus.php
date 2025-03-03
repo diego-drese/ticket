@@ -9,4 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTicketStatus extends CreateRecord
 {
     protected static string $resource = TicketStatusResource::class;
+    protected function getTitle(): string{
+        return __('View ticket status');
+    }
 }

@@ -9,7 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTicket extends CreateRecord
 {
     protected function getTitle(): string{
-        return __('Criar ticket');
+        return __('New ticket');
     }
     protected static string $resource = TicketResource::class;
 }

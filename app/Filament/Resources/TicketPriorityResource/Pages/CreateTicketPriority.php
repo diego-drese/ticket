@@ -10,7 +10,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTicketPriority extends CreateRecord
 {
     protected static string $resource = TicketPriorityResource::class;
-
+    protected function getTitle(): string{
+        return __('New ticket priority');
+    }
     protected function afterCreate(): void
     {
         if ($this->record->is_default) {

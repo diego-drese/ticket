@@ -9,7 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateProjectStatus extends CreateRecord
 {
     protected static string $resource = ProjectStatusResource::class;
-
+    protected function getTitle(): string{
+        return __('New project status');
+    }
     protected function afterCreate(): void
     {
         if ($this->record->is_default) {

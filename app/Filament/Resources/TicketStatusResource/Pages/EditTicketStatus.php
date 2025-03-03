@@ -10,7 +10,9 @@ use Filament\Resources\Pages\EditRecord;
 class EditTicketStatus extends EditRecord
 {
     protected static string $resource = TicketStatusResource::class;
-
+    protected function getTitle(): string{
+        return __('Edit ticket status');
+    }
     protected function getActions(): array
     {
         return [
