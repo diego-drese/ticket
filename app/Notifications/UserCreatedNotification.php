@@ -41,8 +41,7 @@ class UserCreatedNotification extends Notification implements ShouldQueue
      * @param mixed $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
-    {
+    public function toMail($notifiable) {
         return (new MailMessage)
             ->subject(__('Validate your account'))
             ->line(__('Welcome to :app platform.', ['app' => config('app.name')]))

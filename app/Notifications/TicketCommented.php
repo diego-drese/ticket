@@ -48,6 +48,7 @@ class TicketCommented extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject(__('Ticket commented'))
             ->line(
                 __(
                     'A new comment has been added to the ticket :ticket by :name.',

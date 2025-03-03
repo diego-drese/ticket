@@ -51,6 +51,7 @@ class TicketStatusUpdated extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject(__('Ticket status updated'))
             ->line(__('The status of ticket :ticket has been updated.', ['ticket' => $this->ticket->name]))
             ->line('- ' . __('Old status:') . ' ' . $this->activity->oldStatus->name)
             ->line('- ' . __('New status:') . ' ' . $this->activity->newStatus->name)
